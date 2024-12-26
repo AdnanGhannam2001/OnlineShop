@@ -1,8 +1,20 @@
+using OnlineShop.Extensions;
+using Serilog;
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+if (!app.HandleArgs(args))
+{
+    return -1;
+}
 
 if (!app.Environment.IsDevelopment())
 {
@@ -22,3 +34,5 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+return 0;

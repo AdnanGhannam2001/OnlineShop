@@ -11,9 +11,14 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-if (!app.HandleArgs(args))
+var success = app.HandleArgs(args);
+if (success == false)
 {
     return -1;
+}
+else if (success == true)
+{
+    return 0;
 }
 
 if (!app.Environment.IsDevelopment())

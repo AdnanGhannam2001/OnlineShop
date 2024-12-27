@@ -3,6 +3,7 @@
 ##
 ## Get latest from `dotnet new gitignore`
 Notes.md
+src/OnlineShop/Data/Sql/Init/Seed
 
 # dotenv files
 .env

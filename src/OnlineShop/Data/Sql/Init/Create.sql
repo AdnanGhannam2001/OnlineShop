@@ -1,25 +1,27 @@
 CREATE TABLE [AppUsers] (
     [Id]           VARCHAR(25) PRIMARY KEY,
-    [Username]     VARCHAR(50) UNIQUE,
-    [Role]         INT,
-    [PasswordHash] VARBINARY(32) UNIQUE,
+    [Username]     VARCHAR(50) UNIQUE NOT NULL,
+    [Role]         INT NOT NULL,
+    [PasswordHash] NVARCHAR(255) NOT NULL,
     [CreatedAt]    DATETIME DEFAULT GETDATE(),
 );
 
 CREATE TABLE [Categories] (
     [Id]        VARCHAR(25) PRIMARY KEY,
-    [Label]     VARCHAR(50) UNIQUE,
+    [Label]     VARCHAR(50) UNIQUE NOT NULL,
     [CreatedAt] DATETIME DEFAULT GETDATE(),
 );
 
 CREATE TABLE [Products] (
-    [Id]        VARCHAR(25) PRIMARY KEY,
-    [Name]      VARCHAR(50) UNIQUE,
-    [Quantity]  INT,
-    [Cost]      DECIMAL(10, 2),
-    [Discount]  TINYINT CHECK (Discount >= 0 AND Discount <= 100),
-    [Details]   NVARCHAR(MAX),
-    [CreatedAt] DATETIME DEFAULT GETDATE(),
+    [Id]         VARCHAR(25) PRIMARY KEY,
+    [Name]       VARCHAR(50),
+    [Quantity]   INT DEFAULT 0,
+    [Cost]       DECIMAL(10, 2),
+    [Discount]   TINYINT CHECK (Discount >= 0 AND Discount <= 100),
+    [Details]    NVARCHAR(MAX) NOT NULL,
+    [CategoryId] VARCHAR(25),
+    [CreatedAt]  DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY ([CategoryId]) REFERENCES [Categories]([Id]),
 );
 
 CREATE TABLE [Orders] (

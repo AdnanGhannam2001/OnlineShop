@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using OnlineShop.Constants;
 using OnlineShop.Data;
 using OnlineShop.Extensions;
@@ -11,6 +12,13 @@ Log.Logger = new LoggerConfiguration()
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddAuthentication(config =>
+    {
+        config.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        config.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    })
+    .AddCookie();
 
 builder.Services.AddScoped<IDatabaseConnection, DapperDatabaseConnection>(
     _ => new DapperDatabaseConnection(builder.Configuration.GetConnectionString(DbConstants.ConnectionStringName)));
@@ -38,6 +46,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

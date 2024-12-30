@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using OnlineShop.Constants;
+using OnlineShop.Data.Constants;
 using OnlineShop.Data;
 using OnlineShop.Extensions;
-using OnlineShop.Interfaces;
+using OnlineShop.Data.Interfaces;
 using OnlineShop.Services;
 using Serilog;
 

@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BC0B82A3-4B1
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineShop", "src\OnlineShop\OnlineShop.csproj", "{5829477C-4492-402B-B56B-D450972CAB4B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineShop.Data", "src\OnlineShop.Data\OnlineShop.Data.csproj", "{B31E7696-5640-4FC7-99B8-B395A4881BF1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,8 +22,13 @@ Global
 		{5829477C-4492-402B-B56B-D450972CAB4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5829477C-4492-402B-B56B-D450972CAB4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5829477C-4492-402B-B56B-D450972CAB4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B31E7696-5640-4FC7-99B8-B395A4881BF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B31E7696-5640-4FC7-99B8-B395A4881BF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B31E7696-5640-4FC7-99B8-B395A4881BF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B31E7696-5640-4FC7-99B8-B395A4881BF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{5829477C-4492-402B-B56B-D450972CAB4B} = {BC0B82A3-4B11-4CD8-A446-9AD8C7F08FE8}
+		{B31E7696-5640-4FC7-99B8-B395A4881BF1} = {BC0B82A3-4B11-4CD8-A446-9AD8C7F08FE8}
 	EndGlobalSection
 EndGlobal

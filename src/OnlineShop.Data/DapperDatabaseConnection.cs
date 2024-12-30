@@ -1,5 +1,5 @@
 using Microsoft.Data.SqlClient;
-using OnlineShop.Interfaces;
+using OnlineShop.Data.Interfaces;
 
 namespace OnlineShop.Data;
 

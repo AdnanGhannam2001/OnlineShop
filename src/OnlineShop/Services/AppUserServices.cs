@@ -1,6 +1,6 @@
 using Dapper;
-using OnlineShop.Data.SqlModels;
-using OnlineShop.Interfaces;
+using OnlineShop.Data.Models;
+using OnlineShop.Data.Interfaces;
 
 namespace OnlineShop.Services;
 

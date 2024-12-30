@@ -1,6 +1,6 @@
-using OnlineShop.Enums;
+using OnlineShop.Data.Enums;
 
-namespace OnlineShop.Data.SqlModels;
+namespace OnlineShop.Data.Models;
 
 public class AppUser
 {

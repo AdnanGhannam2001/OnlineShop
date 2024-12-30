@@ -1,12 +1,10 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Dapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using OnlineShop.Data.SqlModels;
-using OnlineShop.Interfaces;
+using OnlineShop.Data.Interfaces;
 using OnlineShop.Models.User;
 
 namespace OnlineShop.Controllers;

@@ -1,6 +1,6 @@
 using Microsoft.Data.SqlClient;
 
-namespace OnlineShop.Interfaces;
+namespace OnlineShop.Data.Interfaces;
 
 public interface IDatabaseConnection
 {

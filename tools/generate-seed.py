@@ -20,7 +20,7 @@ categories = [
     "Grocery"
 ]
 
-dir_path = os.path.join("src", "OnlineShop", "Data", "Sql", "Init", "Seed")
+dir_path = os.path.join("src", "OnlineShop.Data", "Sql", "Init", "Seed")
 os.makedirs(dir_path, exist_ok=True)
 
 def gen_scripts(name: str, script: str) -> None:

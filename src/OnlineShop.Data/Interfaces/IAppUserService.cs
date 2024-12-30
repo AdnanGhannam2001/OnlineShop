@@ -1,6 +1,6 @@
-using OnlineShop.Data.SqlModels;
+using OnlineShop.Data.Models;
 
-namespace OnlineShop.Interfaces;
+namespace OnlineShop.Data.Interfaces;
 
 public interface IAppUserService
 {

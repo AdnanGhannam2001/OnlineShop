@@ -3,6 +3,7 @@ using OnlineShop.Constants;
 using OnlineShop.Data;
 using OnlineShop.Extensions;
 using OnlineShop.Interfaces;
+using OnlineShop.Services;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -22,6 +23,8 @@ builder.Services.AddAuthentication(config =>
 
 builder.Services.AddScoped<IDatabaseConnection, DapperDatabaseConnection>(
     _ => new DapperDatabaseConnection(builder.Configuration.GetConnectionString(DbConstants.ConnectionStringName)));
+
+builder.Services.AddScoped<IAppUserService, AppUserService>();
 
 var app = builder.Build();
 

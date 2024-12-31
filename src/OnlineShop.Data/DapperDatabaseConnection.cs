@@ -16,4 +16,9 @@ public sealed class DapperDatabaseConnection : IDatabaseConnection
     }
 
     public SqlConnection Connection { get; set; }
+
+    public void Dispose()
+    {
+        Connection.Close();
+    }
 }

@@ -1,10 +1,11 @@
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OnlineShop.Data.Enums;
 using OnlineShop.Data.Interfaces;
+using OnlineShop.Data.Models;
 using OnlineShop.Models.User;
 
 namespace OnlineShop.Controllers;
@@ -21,6 +22,11 @@ public sealed class UsersController : Controller
     [HttpGet]
     public IActionResult Login()
     {
+        if (HttpContext.User.Identity?.IsAuthenticated == true)
+        {
+            return RedirectToAction(nameof(HomeController.Index), "Home");
+        }
+
         return View();
     }
 
@@ -40,20 +46,28 @@ public sealed class UsersController : Controller
             return View(model);
         }
 
-        if (!PasswordIsCorrect(model.Password, user.PasswordHash))
+        if (!user.PasswordIsCorrect(model.Password))
         {
             ModelState.AddModelError(nameof(model.Password), "Password is wrong");
             return View(model);
         }
 
-        await SignInAsync(user.Id, model.Keep);
+        await SignInAsync(user.Id, user.Username, model.Keep);
         return RedirectToAction(nameof(HomeController.Index), "Home");
     }
 
-    private Task SignInAsync(string id, bool keep)
+    [Authorize]
+    public async Task<IActionResult> Signout()
     {
-        var claim = new Claim("id", id);
-        var identity = new ClaimsIdentity([claim], CookieAuthenticationDefaults.AuthenticationScheme);
+        await HttpContext.SignOutAsync();
+        return RedirectToAction(nameof(HomeController.Index), "Home");
+    }
+
+    private Task SignInAsync(string id, string username, bool keep = false)
+    {
+        var idClaim = new Claim("id", id);
+        var usernameClaim = new Claim("username", username);
+        var identity = new ClaimsIdentity([idClaim, usernameClaim], CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(identity);
         return HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
             principal,
@@ -63,12 +77,5 @@ public sealed class UsersController : Controller
                 IsPersistent = keep,
                 AllowRefresh = true
             });
-    }
-
-    private static bool PasswordIsCorrect(string password, string hash)
-    {
-        return hash.Equals(
-            Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(password))),
-            StringComparison.OrdinalIgnoreCase);
     }
 }

@@ -20,6 +20,42 @@ public sealed class UsersController : Controller
     }
 
     [HttpGet]
+    public IActionResult Register()
+    {
+        if (HttpContext.User.Identity?.IsAuthenticated == true)
+        {
+            return RedirectToAction(nameof(HomeController.Index), "Home");
+        }
+
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Register(RegisterModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        if (model.Password != model.ConfirmPassword)
+        {
+            ModelState.AddModelError(nameof(model.ConfirmPassword), "Passwords don't match");
+            return View(model);
+        }
+
+        var user = new AppUser(model.Username, AppUserRole.NormalUser, model.Password);
+        if (!await _service.CreateUserAsync(user))
+        {
+            ModelState.AddModelError(nameof(model.Username), "Username already exists");
+            return View(model);
+        }
+
+        await SignInAsync(user.Id, user.Username);
+        return RedirectToAction(nameof(HomeController.Index), "Home");
+    }
+
+    [HttpGet]
     public IActionResult Login()
     {
         if (HttpContext.User.Identity?.IsAuthenticated == true)

@@ -6,4 +6,5 @@ public interface IAppUserService
 {
     Task<AppUser?> GetUserByIdAsync(string id);
     Task<AppUser?> GetUserByNameAsync(string username);
+    Task<bool> CreateUserAsync(AppUser user);
 }

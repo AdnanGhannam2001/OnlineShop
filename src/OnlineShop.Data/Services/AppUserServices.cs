@@ -1,9 +1,8 @@
 using Dapper;
 using OnlineShop.Data.Models;
 using OnlineShop.Data.Interfaces;
-using Serilog;
 
-namespace OnlineShop.Services;
+namespace OnlineShop.Data.Services;
 
 internal class AppUserService : IAppUserService
 {

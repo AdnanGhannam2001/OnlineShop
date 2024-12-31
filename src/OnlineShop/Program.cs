@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using OnlineShop.Data.Constants;
-using OnlineShop.Data;
 using OnlineShop.Extensions;
-using OnlineShop.Data.Interfaces;
-using OnlineShop.Services;
 using Serilog;
+using OnlineShop.Data.Extensions;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -21,10 +19,7 @@ builder.Services.AddAuthentication(config =>
     })
     .AddCookie();
 
-builder.Services.AddScoped<IDatabaseConnection, DapperDatabaseConnection>(
-    _ => new DapperDatabaseConnection(builder.Configuration.GetConnectionString(DbConstants.ConnectionStringName)));
-
-builder.Services.AddScoped<IAppUserService, AppUserService>();
+builder.Services.AddData(builder.Configuration.GetConnectionString(DbConstants.ConnectionStringName));
 
 var app = builder.Build();
 

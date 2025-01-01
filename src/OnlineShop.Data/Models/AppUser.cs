@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using NanoidDotNet;
+using OnlineShop.Data.Constants;
 using OnlineShop.Data.Enums;
 
 namespace OnlineShop.Data.Models;
@@ -13,7 +14,7 @@ public class AppUser
 
     public AppUser(string username, AppUserRole role, string password)
     {
-        Id = Nanoid.Generate(size: 25);
+        Id = Nanoid.Generate(size: DbConstants.NanoIdSize);
         Username = username;
         Role = role;
         PasswordHash = HashPassword(password);
@@ -21,9 +22,9 @@ public class AppUser
     }
 
     public string Id { get; init; }
-    public string Username { get; set; }
-    public AppUserRole Role { get; set; }
-    public string PasswordHash { get; set; }
+    public string Username { get; private set; }
+    public AppUserRole Role { get; private set; }
+    public string PasswordHash { get; private set; }
     public DateTime CreatedAt { get; init; }
 
     public override string ToString()

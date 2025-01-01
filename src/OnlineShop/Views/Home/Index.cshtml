@@ -1,8 +1,22 @@
-﻿@{
+﻿@using OnlineShop.Data.Common
+@using OnlineShop.Data.Models
+@model Page<Product>
+
+@{
     ViewData["Title"] = "Home Page";
+    var categories = (IEnumerable<Category>)ViewData["categories"]!;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@foreach (var item in categories)
+{
+    <h3>
+        <a asp-route-categoryId="@item.Id">@item.Label</a>
+    </h3>
+}
+
+<hr>
+
+@foreach (var item in Model.Items)
+{
+    <h4>@item.Name</h4>
+}

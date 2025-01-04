@@ -25,7 +25,7 @@ public class HomeController : Controller
         [FromQuery] int max = 10000)
     {
         var model = new IndexModel(pageNumber,
-            await _productService.GetProducts(new PageRequest(10, pageNumber), categoryLabel),
+            await _productService.GetProducts(new PageRequest(10, pageNumber), new Range(min, max), categoryLabel),
             await _productService.GetCategories(),
             categoryLabel,
             new Range(min, max));

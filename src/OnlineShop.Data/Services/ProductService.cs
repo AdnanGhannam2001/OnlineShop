@@ -20,14 +20,15 @@ internal class ProductService : IProductService
         return db.QueryAsync<Category>("SELECT * FROM [Categories];");
     }
 
-    public async Task<Page<Product>> GetProducts(PageRequest pageRequest, string? categoryLabel = null)
+    public async Task<Page<Product>> GetProducts(PageRequest pageRequest, Range priceRange, string? categoryLabel = null)
     {
         var db = _connection.Connection;
+        var inRange = $"p.[Cost] >= {priceRange.Start} AND p.[Cost] <= {priceRange.End}";
         var join = categoryLabel is null
-            ? "" :
-            """
+            ? inRange :
+            $"""
                 LEFT JOIN [Categories] c ON p.[CategoryId] = c.[Id]
-                WHERE c.[Label] = @CategoryLabel
+                WHERE c.[Label] = @CategoryLabel AND {inRange}
             """;
         var orderBy = pageRequest.Desc ? "DESC" : "ASC";
         var products = await db.QueryAsync<Product>($"""

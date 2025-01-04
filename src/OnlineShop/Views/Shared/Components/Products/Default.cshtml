@@ -1,0 +1,37 @@
+@using OnlineShop.Data.Models;
+@model IEnumerable<Product>
+
+<div class="d-flex flex-wrap align-items-start gap-3">
+    @foreach (var item in Model)
+    {
+    <div class="card align-self-stretch" style="width: 15rem;">
+        @* TODO *@
+        <img class="card-img-top" src="..." alt="Card image">
+        <div class="card-body">
+            <h5 class="card-title">@item.Name</h5>
+            <p class="card-text">@item.Details</p>
+            @if (item.Discount != 0)
+            {
+            <p class="card-text">
+                <span class="text-decoration-line-through text-muted">@item.Cost</span>
+                <span class="h4 text-success">@($"{(item.Cost * (1 - item.Discount / 100m)).ToString("F2")}$")</span>
+            </p>
+            <p>You save: <strong>@item.Discount%</strong></p>
+            }
+            else
+            {
+            <p class="card-text">@item.Cost</p>
+            }
+            @if (item.Quantity != 0)
+            {
+                <small class="text-success">In Stock</small>
+            }
+            else
+            {
+                <small class="text-danger">Out of Stock</small>
+            }
+            <a asp-action="Product" asp-route-id="@item.Id" class="btn btn-primary">View Product</a>
+        </div>
+    </div>
+    }
+</div>

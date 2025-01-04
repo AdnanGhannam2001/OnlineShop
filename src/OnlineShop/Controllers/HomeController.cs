@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Data.Common;
 using OnlineShop.Data.Interfaces;
 using OnlineShop.Models;
+using OnlineShop.Models.Home;
 
 namespace OnlineShop.Controllers;
 
@@ -18,13 +19,18 @@ public class HomeController : Controller
         _productService = productService;
     }
 
-    public async Task<IActionResult> Index([FromQuery] int pageNumber,
-        [FromQuery] string? categoryId = null)
+    public async Task<IActionResult> Index([FromQuery] int pageNumber = 0,
+        [FromQuery] string? categoryLabel = null,
+        [FromQuery] int min = 0,
+        [FromQuery] int max = 10000)
     {
-        ViewData["categories"] = await _productService.GetCategories();
-        var products = await _productService.GetProducts(new PageRequest(10, pageNumber), categoryId);
-
-        return View(products);
+        var model = new IndexModel(pageNumber,
+            await _productService.GetProducts(new PageRequest(10, pageNumber), categoryLabel),
+            await _productService.GetCategories(),
+            categoryLabel,
+            new Range(min, max));
+        
+        return View(model);
     }
 
     public IActionResult Privacy()

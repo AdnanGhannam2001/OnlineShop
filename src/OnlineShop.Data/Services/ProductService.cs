@@ -20,20 +20,30 @@ internal class ProductService : IProductService
         return db.QueryAsync<Category>("SELECT * FROM [Categories];");
     }
 
-    public async Task<Page<Product>> GetProducts(PageRequest pageRequest, string? categoryId = null)
+    public async Task<Page<Product>> GetProducts(PageRequest pageRequest, string? categoryLabel = null)
     {
         var db = _connection.Connection;
-        var condition = categoryId is null ? "" : "WHERE [CategoryId] = @CategoryId";
+        var join = categoryLabel is null
+            ? "" :
+            """
+                LEFT JOIN [Categories] c ON p.[CategoryId] = c.[Id]
+                WHERE c.[Label] = @CategoryLabel
+            """;
+        var orderBy = pageRequest.Desc ? "DESC" : "ASC";
         var products = await db.QueryAsync<Product>($"""
-            SELECT *
-            FROM [Products]
-            {condition}
-            ORDER BY [CreatedAt]
+            SELECT p.*
+            FROM [Products] p
+            {join}
+            ORDER BY [CreatedAt] {orderBy}
             OFFSET @Offset ROWS
             FETCH NEXT @Size ROWS ONLY;
-        """, new { Offset = pageRequest.Size * pageRequest.Number, Size = pageRequest.Size, CategoryId = categoryId });
+        """, new { Offset = pageRequest.Size * pageRequest.Number, Size = pageRequest.Size, CategoryLabel = categoryLabel });
 
-        var total = await db.QueryFirstAsync<int>("SELECT COUNT(*) FROM [Products];");
+        var total = await db.QueryFirstAsync<int>($"""
+            SELECT COUNT(*)
+            FROM [Products] p
+            {join};
+        """, new { CategoryLabel = categoryLabel });
 
         return new(pageRequest.Size, total, products);
     }

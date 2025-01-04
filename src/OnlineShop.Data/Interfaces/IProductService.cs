@@ -6,5 +6,5 @@ namespace OnlineShop.Data.Interfaces;
 public interface IProductService
 {
     Task<IEnumerable<Category>> GetCategories();
-    Task<Page<Product>> GetProducts(PageRequest pageRequest, string? categoryId = null);
+    Task<Page<Product>> GetProducts(PageRequest pageRequest, string? categoryLabel = null);
 }

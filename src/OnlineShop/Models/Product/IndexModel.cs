@@ -1,10 +1,10 @@
 using OnlineShop.Data.Common;
 using OnlineShop.Data.Models;
 
-namespace OnlineShop.Models.Home;
+namespace OnlineShop.Models.Product;
 
 public record IndexModel(int PageNumber,
-    Page<Product> Page,
+    Page<Data.Models.Product> Page,
     IEnumerable<Category> Categories,
     string? Selected,
     Range MinMax);

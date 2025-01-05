@@ -37,4 +37,9 @@ public class Product
     public string CategoryId { get; private set; }
     public Category? Category { get; private set; }
     public DateTime CreatedAt { get; init; }
+
+    public void SetCategory(Category? category)
+    {
+        Category = category;
+    }
 }

@@ -1,0 +1,41 @@
+@using OnlineShop.Data.Models
+@using OnlineShop.Controllers
+@using OnlineShop.Models.Product
+@model ProductModel
+
+<div class="container mt-5">
+    <h1 class="mb-4">@Model.Product.Name</h1>
+    <div class="card">
+        <div class="card-body">
+            <p class="card-text"><strong>Product ID: </strong>@Model.Product.Id</p>
+            <p class="card-text"><strong>Quantity: </strong>@Model.Product.Quantity</p>
+            <p class="card-text"><strong>Cost: </strong>@Model.Product.Cost.ToString("C")</p>
+            <p class="card-text"><strong>Discount: </strong>@Model.Product.Discount%</p>
+            <p class="card-text"><strong>Details: </strong>@Model.Product.Details</p>
+            <p class="card-text"><strong>Category: </strong>@(Model.Product.Category?.Label ?? "N/A")</p>
+            <p class="card-text"><strong>Created At: </strong>@Model.Product.CreatedAt.ToString("g")</p>
+        </div>
+    </div>
+
+    @if (Model.Product.Quantity != 0)
+    {
+        @if (!Model.InCart)
+        {
+        <a class="btn btn-success mt-3"
+            asp-controller="@ProductsController.Name"
+            asp-action="@nameof(ProductsController.AddToCart)"
+        >Add To Cart</a>
+        }
+        else
+        {
+        <a class="btn btn-danger mt-3"
+            asp-controller="@ProductsController.Name"
+            asp-action="@nameof(ProductsController.RemoveFromCart)"
+        >Remove From Cart</a>
+        }
+    }
+    <a class="btn btn-primary mt-3"
+        asp-controller="@ProductsController.Name"
+        asp-action="@nameof(ProductsController.Index)"
+    >Back to Products</a>
+</div>

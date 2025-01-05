@@ -1,21 +1,18 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Data.Common;
 using OnlineShop.Data.Interfaces;
-using OnlineShop.Models;
 using OnlineShop.Models.Home;
 
 namespace OnlineShop.Controllers;
 
-public class HomeController : Controller
+public class ProductsController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    public const string Name = "Products";
+
     private readonly IProductService _productService;
 
-    public HomeController(ILogger<HomeController> logger,
-        IProductService productService)
+    public ProductsController(IProductService productService)
     {
-        _logger = logger;
         _productService = productService;
     }
 
@@ -36,11 +33,5 @@ public class HomeController : Controller
     public IActionResult Privacy()
     {
         return View();
-    }
-
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }

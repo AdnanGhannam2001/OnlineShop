@@ -12,6 +12,8 @@ namespace OnlineShop.Controllers;
 
 public sealed class UsersController : Controller
 {
+    public const string Name = "Users";
+
     private readonly IAppUserService _service;
 
     public UsersController(IAppUserService service)
@@ -24,7 +26,7 @@ public sealed class UsersController : Controller
     {
         if (HttpContext.User.Identity?.IsAuthenticated == true)
         {
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return RedirectToAction(nameof(ProductsController.Index), ProductsController.Name);
         }
 
         return View();
@@ -52,7 +54,7 @@ public sealed class UsersController : Controller
         }
 
         await SignInAsync(user.Id, user.Username);
-        return RedirectToAction(nameof(HomeController.Index), "Home");
+        return RedirectToAction(nameof(ProductsController.Index), ProductsController.Name);
     }
 
     [HttpGet]
@@ -60,7 +62,7 @@ public sealed class UsersController : Controller
     {
         if (HttpContext.User.Identity?.IsAuthenticated == true)
         {
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return RedirectToAction(nameof(ProductsController.Index), ProductsController.Name);
         }
 
         return View();
@@ -89,14 +91,14 @@ public sealed class UsersController : Controller
         }
 
         await SignInAsync(user.Id, user.Username, model.Keep);
-        return RedirectToAction(nameof(HomeController.Index), "Home");
+        return RedirectToAction(nameof(ProductsController.Index), ProductsController.Name);
     }
 
     [Authorize]
     public async Task<IActionResult> Signout()
     {
         await HttpContext.SignOutAsync();
-        return RedirectToAction(nameof(HomeController.Index), "Home");
+        return RedirectToAction(nameof(ProductsController.Index), ProductsController.Name);
     }
 
     private Task SignInAsync(string id, string username, bool keep = false)

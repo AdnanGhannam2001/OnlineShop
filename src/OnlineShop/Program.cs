@@ -17,7 +17,7 @@ builder.Services.AddAuthentication(config =>
         config.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
         config.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     })
-    .AddCookie();
+    .AddCookie(config => config.AccessDeniedPath = config.LoginPath = "/Errors/UnAuthorized");
 
 builder.Services.AddData(builder.Configuration.GetConnectionString(DbConstants.ConnectionStringName));
 

@@ -1,0 +1,14 @@
+@using OnlineShop.Controllers;
+
+@{
+    ViewData["Title"] = "404 - Page Not Found";
+}
+
+<div class="text-center">
+    <h1>Unauthorized Access</h1>
+    <p>do not have permission to view this page.</p>
+    <a class="btn btn-primary"
+        asp-controller="@UsersController.Name"
+        asp-action="@nameof(UsersController.Login)"
+    >Login</a>
+</div>

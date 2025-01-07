@@ -18,4 +18,9 @@ public class ErrorsController : Controller
     {
         return View(model: message);
     }
+
+    public IActionResult UnAuthorized()
+    {
+        return View();
+    }
 }

@@ -1,0 +1,23 @@
+@using OnlineShop.Models.Components
+@using OnlineShop.ViewComponents;
+@model ToastModel
+
+@*
+<button type="button" class="btn btn-primary" id="liveToastBtn" onclick="showToast('@Model.Id')">
+    @Model.ButtonText
+</button>
+*@
+
+@await Component.InvokeAsync(ToastViewComponent.Name, new ToastModel("A", "b", "c", "d"))
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="@Model.Id" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+      <strong class="me-auto">@Model.Title</strong>
+      <small>@Model.SubTitle</small>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      @Model.Message
+    </div>
+  </div>
+</div>

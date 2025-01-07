@@ -32,26 +32,36 @@ public class ProductsController : Controller
     }
 
     [HttpGet("{id}")]
-    [Authorize]
     public async Task<IActionResult> Product([FromRoute] string id)
     {
         var product = await _productService.GetProductByIdAsync(id);
-        var inCart = await _productService.ProductInCartAsync(id, User.Claims.First(x => x.Type == "id").Value);
+        bool? inCart = null;
+
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            inCart = await _productService.ProductInCartAsync(id, GetUserId());
+        }
 
         return product is not null
             ? View(new ProductModel(product, inCart))
-            : RedirectToAction("NotFound", "Errors", new { message = "Product was not found" });
+            : RedirectToAction(nameof(ErrorsController.NotFound),
+                ErrorsController.Name,
+                new { message = "Product was not found" });
     }
 
-    // TODO
+    [Authorize]
     public async Task<IActionResult> AddToCart([FromQuery] string id)
     {
-        return View(nameof(this.Product));
+        await _productService.AddToCartAsync(id, GetUserId());
+        return RedirectToAction(nameof(this.Product), new { Id = id });
     }
 
-    // TODO
+    [Authorize]
     public async Task<IActionResult> RemoveFromCart([FromQuery] string id)
     {
-        return View(nameof(this.Product));
+        await _productService.RemoveFromCartAsync(id, GetUserId());
+        return RedirectToAction(nameof(this.Product), new { Id = id });
     }
+
+    private string GetUserId() => User.Claims.First(x => x.Type == "id").Value;
 }

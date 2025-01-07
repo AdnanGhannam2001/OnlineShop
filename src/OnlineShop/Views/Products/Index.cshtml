@@ -1,4 +1,5 @@
 ﻿@using OnlineShop.Models.Product
+@using OnlineShop.ViewComponents
 @model IndexModel
 
 @{
@@ -62,7 +63,7 @@
 
 <div class="flex-grow-1 p-2">
     <h2>@(Model.Selected ?? "All Products")</h2>
-    @await Component.InvokeAsync("Products", Model.Page.Items)
+    @await Component.InvokeAsync(ProductsViewComponent.Name, Model.Page.Items)
 
     <nav class="py-3">
     <ul class="pagination">

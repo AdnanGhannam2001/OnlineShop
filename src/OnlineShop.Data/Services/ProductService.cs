@@ -80,4 +80,23 @@ internal class ProductService : IProductService
             END AS IsEmpty;
         """, new { ProductId = productId, UserId = userId });
     }
+
+    public Task AddToCartAsync(string productId, string userId)
+    {
+        var db = _connection.Connection;
+        return db.QueryAsync($"""
+            INSERT INTO [UsersProducts]
+                ([UserId], [ProductId])
+            VALUES (@UserId, @ProductId);
+        """, new { UserId = userId, ProductId = productId });
+    }
+
+    public Task RemoveFromCartAsync(string productId, string userId)
+    {
+        var db = _connection.Connection;
+        return db.QueryAsync($"""
+            DELETE FROM [UsersProducts]
+            WHERE [ProductId] = @ProductId AND [UserId] = @UserId;
+        """, new { ProductId = productId, UserId = userId });
+    }
 }

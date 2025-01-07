@@ -17,13 +17,14 @@
         </div>
     </div>
 
-    @if (Model.Product.Quantity != 0)
+    @if (Model.Product.Quantity != 0 && Model.InCart is not null)
     {
-        @if (!Model.InCart)
+        @if (Model.InCart == false)
         {
         <a class="btn btn-success mt-3"
             asp-controller="@ProductsController.Name"
             asp-action="@nameof(ProductsController.AddToCart)"
+            asp-route-id="@Model.Product.Id"
         >Add To Cart</a>
         }
         else
@@ -31,6 +32,7 @@
         <a class="btn btn-danger mt-3"
             asp-controller="@ProductsController.Name"
             asp-action="@nameof(ProductsController.RemoveFromCart)"
+            asp-route-id="@Model.Product.Id"
         >Remove From Cart</a>
         }
     }

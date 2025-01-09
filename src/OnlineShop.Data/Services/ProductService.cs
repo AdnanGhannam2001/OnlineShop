@@ -46,7 +46,7 @@ internal class ProductService : IProductService
             {join};
         """, new { CategoryLabel = categoryLabel });
 
-        return new(pageRequest.Size, total, products);
+        return new(total, products);
     }
 
     public async Task<Product?> GetProductByIdAsync(string id)
@@ -78,25 +78,6 @@ internal class ProductService : IProductService
                 THEN 0
                 ELSE 1
             END AS IsEmpty;
-        """, new { ProductId = productId, UserId = userId });
-    }
-
-    public Task AddToCartAsync(string productId, string userId)
-    {
-        var db = _connection.Connection;
-        return db.QueryAsync($"""
-            INSERT INTO [UsersProducts]
-                ([UserId], [ProductId])
-            VALUES (@UserId, @ProductId);
-        """, new { UserId = userId, ProductId = productId });
-    }
-
-    public Task RemoveFromCartAsync(string productId, string userId)
-    {
-        var db = _connection.Connection;
-        return db.QueryAsync($"""
-            DELETE FROM [UsersProducts]
-            WHERE [ProductId] = @ProductId AND [UserId] = @UserId;
         """, new { ProductId = productId, UserId = userId });
     }
 }

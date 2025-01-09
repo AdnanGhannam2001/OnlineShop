@@ -1,6 +1,7 @@
 using Dapper;
 using OnlineShop.Data.Models;
 using OnlineShop.Data.Interfaces;
+using OnlineShop.Data.Common;
 
 namespace OnlineShop.Data.Services;
 
@@ -40,5 +41,49 @@ internal class AppUserService : IAppUserService
             user);
 
         return true;
+    }
+
+    public async Task<Page<UsersProducts>> GetUsersProductsAsync(string userId, PageRequest pageRequest)
+    {
+        var db = _connection.Connection;
+        var items = await db.QueryAsync<UsersProducts, Product, UsersProducts>($"""
+            SELECT *
+            FROM [UsersProducts] up
+            LEFT JOIN [Products] p ON p.[Id] = up.[ProductId]
+            WHERE up.[UserId] = @UserId;
+        """,
+            (up, p) =>
+            {
+                up.SetProduct(p);
+                return up;
+            },
+            new { UserId = userId });
+
+        var total = await db.QueryFirstAsync<int>($"""
+            SELECT COUNT(*)
+            FROM [UsersProducts]
+            WHERE [UserId] = @UserId;
+        """, new { UserId = userId });
+
+        return new (total, items);
+    }
+
+    public Task AddToCartAsync(string productId, string userId)
+    {
+        var db = _connection.Connection;
+        return db.QueryAsync($"""
+            INSERT INTO [UsersProducts]
+                ([UserId], [ProductId])
+            VALUES (@UserId, @ProductId);
+        """, new { UserId = userId, ProductId = productId });
+    }
+
+    public Task RemoveFromCartAsync(string productId, string userId)
+    {
+        var db = _connection.Connection;
+        return db.QueryAsync($"""
+            DELETE FROM [UsersProducts]
+            WHERE [ProductId] = @ProductId AND [UserId] = @UserId;
+        """, new { ProductId = productId, UserId = userId });
     }
 }

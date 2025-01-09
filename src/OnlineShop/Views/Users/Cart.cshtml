@@ -1,0 +1,54 @@
+@using OnlineShop.Controllers
+@using OnlineShop.Data.Common
+@using OnlineShop.Data.Models
+@using OnlineShop.Models.Components
+@using OnlineShop.Models.User
+@using OnlineShop.ViewComponents
+@model CartModel
+
+@if(Model.Page.Total == 0)
+{
+  <div class="text-center">
+    <h3>Cart is empty</h3>
+    <a asp-controller="@ProductsController.Name"
+      asp-action="@nameof(ProductsController.Index)"
+    >Browse products</a>
+  </div>
+}
+else
+{
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Product</th>
+      <th scope="col">Current Quantity</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (var item in Model.Page.Items)
+    {
+    <tr>
+      <td>
+        <a asp-controller="@ProductsController.Name"
+          asp-action="@nameof(ProductsController.Product)"
+          asp-route-id="@item.ProductId"
+        >@item.Product.Name</a>
+      </td>
+      <td>@item.Product.Quantity</td>
+      <td>
+        <a asp-controller="@UsersController.Name"
+          asp-action="@nameof(UsersController.RemoveFromCart)"
+          asp-route-id="@item.ProductId"
+          asp-route-redirectController="@UsersController.Name"
+          asp-route-redirectAction="@nameof(UsersController.Cart)"
+        >Remove From Cart</a>
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>
+
+@await Component.InvokeAsync(PaginationViewComponent.Name,
+    new PaginationModel(Model.Page.Items.Count(), Model.PageNumber, Model.Page.Total))
+}

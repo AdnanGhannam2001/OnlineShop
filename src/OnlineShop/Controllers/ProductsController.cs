@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Data.Common;
 using OnlineShop.Data.Interfaces;
+using OnlineShop.Extensions;
 using OnlineShop.Models.Product;
 
 namespace OnlineShop.Controllers;
@@ -39,7 +39,7 @@ public class ProductsController : Controller
 
         if (User.Identity?.IsAuthenticated == true)
         {
-            inCart = await _productService.ProductInCartAsync(id, GetUserId());
+            inCart = await _productService.ProductInCartAsync(id, this.GetUserId());
         }
 
         return product is not null
@@ -49,19 +49,4 @@ public class ProductsController : Controller
                 new { message = "Product was not found" });
     }
 
-    [Authorize]
-    public async Task<IActionResult> AddToCart([FromQuery] string id)
-    {
-        await _productService.AddToCartAsync(id, GetUserId());
-        return RedirectToAction(nameof(this.Product), new { Id = id });
-    }
-
-    [Authorize]
-    public async Task<IActionResult> RemoveFromCart([FromQuery] string id)
-    {
-        await _productService.RemoveFromCartAsync(id, GetUserId());
-        return RedirectToAction(nameof(this.Product), new { Id = id });
-    }
-
-    private string GetUserId() => User.Claims.First(x => x.Type == "id").Value;
 }

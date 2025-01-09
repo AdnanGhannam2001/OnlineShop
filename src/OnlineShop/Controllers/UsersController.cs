@@ -2,10 +2,13 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using OnlineShop.Data.Common;
 using OnlineShop.Data.Enums;
 using OnlineShop.Data.Interfaces;
 using OnlineShop.Data.Models;
+using OnlineShop.Extensions;
 using OnlineShop.Models.User;
 
 namespace OnlineShop.Controllers;
@@ -99,6 +102,30 @@ public sealed class UsersController : Controller
     {
         await HttpContext.SignOutAsync();
         return RedirectToAction(nameof(ProductsController.Index), ProductsController.Name);
+    }
+
+    [Authorize]
+    public async Task<IActionResult> Cart([FromQuery] int pageNumber = 0)
+    {
+        var page = await _service.GetUsersProductsAsync(this.GetUserId(), new PageRequest(10, pageNumber));
+        var model = new CartModel(pageNumber, page);
+        return View(model);
+    }
+
+    [Authorize]
+    public async Task<IActionResult> AddToCart([FromQuery] string id)
+    {
+        await _service.AddToCartAsync(id, this.GetUserId());
+        return RedirectToAction(nameof(ProductsController.Product), ProductsController.Name, new { Id = id });
+    }
+
+    [Authorize]
+    public async Task<IActionResult> RemoveFromCart([FromQuery] string id,
+        [FromQuery] string redirectController = ProductsController.Name,
+        [FromQuery] string redirectAction = nameof(ProductsController.Product))
+    {
+        await _service.RemoveFromCartAsync(id, this.GetUserId());
+        return RedirectToAction(redirectAction, redirectController, new { Id = id });
     }
 
     private Task SignInAsync(string id, string username, bool keep = false)

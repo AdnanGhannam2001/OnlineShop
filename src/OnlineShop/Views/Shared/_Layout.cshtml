@@ -34,13 +34,19 @@
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Signout">Sign out</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="@UsersController.Name"
+                                    asp-action="@nameof(UsersController.Cart)">Cart</a>
+                        </li>
+                        <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="@UsersController.Name"
+                                    asp-action="@nameof(UsersController.Signout)">Sign out</a>
                         </li>
                         }
                         else
                         {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Login">Login</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="@UsersController.Name"
+                                    asp-action="@nameof(UsersController.Login)">Login</a>
                         </li>
                         }
                     </ul>

@@ -22,16 +22,16 @@
         @if (Model.InCart == false)
         {
         <a class="btn btn-success mt-3"
-            asp-controller="@ProductsController.Name"
-            asp-action="@nameof(ProductsController.AddToCart)"
+            asp-controller="@UsersController.Name"
+            asp-action="@nameof(UsersController.AddToCart)"
             asp-route-id="@Model.Product.Id"
         >Add To Cart</a>
         }
         else
         {
         <a class="btn btn-danger mt-3"
-            asp-controller="@ProductsController.Name"
-            asp-action="@nameof(ProductsController.RemoveFromCart)"
+            asp-controller="@UsersController.Name"
+            asp-action="@nameof(UsersController.RemoveFromCart)"
             asp-route-id="@Model.Product.Id"
         >Remove From Cart</a>
         }

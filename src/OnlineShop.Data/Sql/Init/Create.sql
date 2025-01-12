@@ -34,6 +34,7 @@ CREATE TABLE [Orders] (
 CREATE TABLE [OrdersProducts] (
     [OrderId]   VARCHAR(25),
     [ProductId] VARCHAR(25),
+    [Quantity]  INT DEFAULT 1,
     PRIMARY KEY ([OrderId], [ProductId]),
     FOREIGN KEY ([OrderId])   REFERENCES [Orders]([Id]),
     FOREIGN KEY ([ProductId]) REFERENCES [Products]([Id]),
@@ -43,6 +44,7 @@ CREATE TABLE [OrdersProducts] (
 CREATE TABLE [UsersProducts] (
     [UserId]    VARCHAR(25),
     [ProductId] VARCHAR(25),
+    [Quantity]  INT DEFAULT 1,
     [AddedAt]   DATETIME DEFAULT GETDATE(),
     PRIMARY KEY ([UserId], [ProductId]),
     FOREIGN KEY ([UserId])    REFERENCES [AppUsers]([Id]),

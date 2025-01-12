@@ -49,4 +49,9 @@ public class ProductsController : Controller
                 new { message = "Product was not found" });
     }
 
+    public async Task<IActionResult> Order()
+    {
+        await _productService.OrderProducts(this.GetUserId());
+        return Ok(); // TODO
+    }
 }

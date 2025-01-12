@@ -1,4 +1,5 @@
 using Dapper;
+using Microsoft.AspNetCore.Http.Features;
 using OnlineShop.Data.Common;
 using OnlineShop.Data.Interfaces;
 using OnlineShop.Data.Models;
@@ -79,5 +80,70 @@ internal class ProductService : IProductService
                 ELSE 1
             END AS IsEmpty;
         """, new { ProductId = productId, UserId = userId });
+    }
+
+    public async Task<bool> OrderProducts(string userId)
+    {
+        var db = _connection.Connection;
+
+        var cart = await db.QueryAsync<UserProduct, Product, UserProduct>("""
+            SELECT *
+            FROM [UsersProducts] up
+            LEFT JOIN [Products] p ON up.[ProductId] = p.[Id]
+            WHERE up.[UserId] = @UserId;
+        """,
+            (up, p) =>
+            {
+                up.SetProduct(p);
+                return up;
+            },
+            new { UserId = userId });
+
+        if (!cart.Any())
+        {
+            return false;
+        }
+
+        var order = new Order(userId);
+        await db.OpenAsync();
+        using var tranaction = await db.BeginTransactionAsync();
+
+        try
+        {
+            await db.QueryAsync("""
+                DELETE FROM [UsersProducts]
+                WHERE [UserId] = @UserId;
+            """, new { UserId = userId }, tranaction);
+
+            await db.QueryAsync("""
+                INSERT INTO [Orders] ([Id], [UserId])
+                    VALUES (@Id, @UserId);
+            """, order, tranaction);
+
+            foreach (var item in cart)
+            {
+                if (item.Quantity > item.Product!.Quantity)
+                {
+                    await tranaction.RollbackAsync();
+                    return false;
+                }
+
+                await db.QueryAsync("""
+                    INSERT INTO [OrdersProducts] ([OrderId], [ProductId], [Quantity])
+                        VALUES (@OrderId, @ProductId, @Quantity);
+                """,
+                    new { OrderId = order.Id, item.ProductId, item.Quantity },
+                    tranaction);
+            }
+
+            await tranaction.CommitAsync();
+        }
+        catch(Exception)
+        {
+            await tranaction.RollbackAsync();
+            return false;
+        }
+
+        return true;
     }
 }

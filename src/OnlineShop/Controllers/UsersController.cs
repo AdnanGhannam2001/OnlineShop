@@ -2,7 +2,6 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Data.Common;
 using OnlineShop.Data.Enums;
@@ -18,10 +17,13 @@ public sealed class UsersController : Controller
     public const string Name = "Users";
 
     private readonly IAppUserService _service;
+    private readonly IProductService _productService;
 
-    public UsersController(IAppUserService service)
+    public UsersController(IAppUserService service,
+        IProductService productService)
     {
         _service = service;
+        _productService = productService;
     }
 
     [HttpGet]
@@ -113,9 +115,19 @@ public sealed class UsersController : Controller
     }
 
     [Authorize]
-    public async Task<IActionResult> AddToCart([FromQuery] string id)
+    public async Task<IActionResult> AddToCart([FromForm] string id,
+        [FromForm] int quantity)
     {
-        await _service.AddToCartAsync(id, this.GetUserId());
+        var item = new UserProduct(this.GetUserId(), id, quantity);
+
+        var product = await _productService.GetProductByIdAsync(id);
+
+        if (product is null || quantity < 0 || product.Quantity < quantity)
+        {
+            return RedirectToAction(nameof(ErrorsController.Invalid), ErrorsController.Name, new { message = "Invalid Input" });
+        }
+
+        await _service.AddToCartAsync(item);
         return RedirectToAction(nameof(ProductsController.Product), ProductsController.Name, new { Id = id });
     }
 

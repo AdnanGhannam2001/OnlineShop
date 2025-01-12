@@ -9,4 +9,5 @@ public interface IProductService
     Task<Page<Product>> GetProductsAsync(PageRequest pageRequest, Range priceRange, string? categoryLabel = null);
     Task<Product?> GetProductByIdAsync(string id);
     Task<bool> ProductInCartAsync(string productId, string userId);
+    Task<bool> OrderProducts(string userId);
 }

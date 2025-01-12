@@ -3,7 +3,15 @@
 @using OnlineShop.Models.Product
 @model ProductModel
 
-<div class="container mt-5">
+@{
+    var id = Model.Product.Id;
+    var quantity = 1;
+}
+
+<form class="container mt-5"
+    asp-controller="@UsersController.Name"
+    asp-action="@nameof(UsersController.AddToCart)">
+    <input value="@Model.Product.Id" asp-for="@id" hidden>
     <h1 class="mb-4">@Model.Product.Name</h1>
     <div class="card">
         <div class="card-body">
@@ -14,6 +22,14 @@
             <p class="card-text"><strong>Details: </strong>@Model.Product.Details</p>
             <p class="card-text"><strong>Category: </strong>@(Model.Product.Category?.Label ?? "N/A")</p>
             <p class="card-text"><strong>Created At: </strong>@Model.Product.CreatedAt.ToString("g")</p>
+            <p class="card-text">
+                <strong>Selected Quantity (<strong id="quantity-value">1</strong>): </strong>
+                <input class="form-range" type="range"
+                    value="@quantity" oninput="quantityChange(this.value)"
+                    min="1" max="@Model.Product.Quantity"
+                    id="quantity" asp-for="@quantity"
+                    disabled="@(Model.Product.Quantity == 0)">
+            </p>
         </div>
     </div>
 
@@ -21,11 +37,9 @@
     {
         @if (Model.InCart == false)
         {
-        <a class="btn btn-success mt-3"
-            asp-controller="@UsersController.Name"
-            asp-action="@nameof(UsersController.AddToCart)"
-            asp-route-id="@Model.Product.Id"
-        >Add To Cart</a>
+        <button class="btn btn-success mt-3"
+            type="submit"
+        >Add To Cart</button>
         }
         else
         {
@@ -40,4 +54,12 @@
         asp-controller="@ProductsController.Name"
         asp-action="@nameof(ProductsController.Index)"
     >Back to Products</a>
-</div>
+</form>
+
+<script>
+    const quantityValue = document.getElementById("quantity-value");
+
+    function quantityChange(value) {
+        quantityValue.innerText = value;
+    }
+</script>

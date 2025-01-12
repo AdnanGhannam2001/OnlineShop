@@ -43,10 +43,10 @@ internal class AppUserService : IAppUserService
         return true;
     }
 
-    public async Task<Page<UsersProducts>> GetUsersProductsAsync(string userId, PageRequest pageRequest)
+    public async Task<Page<UserProduct>> GetUsersProductsAsync(string userId, PageRequest pageRequest)
     {
         var db = _connection.Connection;
-        var items = await db.QueryAsync<UsersProducts, Product, UsersProducts>($"""
+        var items = await db.QueryAsync<UserProduct, Product, UserProduct>($"""
             SELECT *
             FROM [UsersProducts] up
             LEFT JOIN [Products] p ON p.[Id] = up.[ProductId]
@@ -68,14 +68,14 @@ internal class AppUserService : IAppUserService
         return new (total, items);
     }
 
-    public Task AddToCartAsync(string productId, string userId)
+    public Task AddToCartAsync(UserProduct item)
     {
         var db = _connection.Connection;
         return db.QueryAsync($"""
             INSERT INTO [UsersProducts]
-                ([UserId], [ProductId])
-            VALUES (@UserId, @ProductId);
-        """, new { UserId = userId, ProductId = productId });
+                ([UserId], [ProductId], [Quantity])
+            VALUES (@UserId, @ProductId, @Quantity);
+        """, item);
     }
 
     public Task RemoveFromCartAsync(string productId, string userId)

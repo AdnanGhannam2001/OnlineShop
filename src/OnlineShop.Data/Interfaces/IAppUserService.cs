@@ -9,7 +9,7 @@ public interface IAppUserService
     Task<AppUser?> GetUserByNameAsync(string username);
     Task<bool> CreateUserAsync(AppUser user);
 
-    Task<Page<UsersProducts>> GetUsersProductsAsync(string userId, PageRequest pageRequest);
-    Task AddToCartAsync(string productId, string userId);
+    Task<Page<UserProduct>> GetUsersProductsAsync(string userId, PageRequest pageRequest);
+    Task AddToCartAsync(UserProduct item);
     Task RemoveFromCartAsync(string productId, string userId);
 }

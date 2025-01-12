@@ -17,11 +17,20 @@
 }
 else
 {
+<div class="mb-3 d-flex justify-content-between">
+  <h2>Cart</h2>
+  <a class="btn btn-success"
+    asp-controller="@ProductsController.Name"
+    asp-action="@nameof(ProductsController.Order)">
+    Order
+  </a>
+</div>
 <table class="table table-hover">
   <thead>
     <tr>
       <th scope="col">Product</th>
       <th scope="col">Current Quantity</th>
+      <th scope="col">Selected Quantity</th>
       <th scope="col">Actions</th>
     </tr>
   </thead>
@@ -33,9 +42,10 @@ else
         <a asp-controller="@ProductsController.Name"
           asp-action="@nameof(ProductsController.Product)"
           asp-route-id="@item.ProductId"
-        >@item.Product.Name</a>
+        >@item.Product?.Name</a>
       </td>
-      <td>@item.Product.Quantity</td>
+      <td>@item.Product?.Quantity</td>
+      <td>@item.Quantity</td>
       <td>
         <a asp-controller="@UsersController.Name"
           asp-action="@nameof(UsersController.RemoveFromCart)"
@@ -50,5 +60,5 @@ else
 </table>
 
 @await Component.InvokeAsync(PaginationViewComponent.Name,
-    new PaginationModel(Model.Page.Items.Count(), Model.PageNumber, Model.Page.Total))
+  new PaginationModel(Model.Page.Items.Count(), Model.PageNumber, Model.Page.Total))
 }

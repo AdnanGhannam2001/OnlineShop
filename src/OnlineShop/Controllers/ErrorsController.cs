@@ -19,6 +19,11 @@ public class ErrorsController : Controller
         return View(model: message);
     }
 
+    public IActionResult Invalid([FromQuery] string? message)
+    {
+        return View(model: message);
+    }
+
     public IActionResult UnAuthorized()
     {
         return View();

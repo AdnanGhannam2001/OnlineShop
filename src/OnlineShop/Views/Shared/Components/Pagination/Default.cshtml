@@ -5,7 +5,9 @@
     var pages = Model.Total / Model.Size;
 }
 
-<nav class="py-3">
+@if (pages > 1)
+{
+<nav class="d-flex justify-content-center my-4">
 <ul class="pagination">
     <li class="page-item @(Model.Number == 0 ? "disabled": "")">
     <a class="page-link"
@@ -31,3 +33,4 @@
     </li>
 </ul>
 </nav>
+}

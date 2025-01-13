@@ -28,4 +28,5 @@ public class Order
     public IReadOnlyCollection<OrderProduct> Products => _products;
 
     public void SetUser(AppUser user) => User = user;
+    public void AddProducts(IEnumerable<OrderProduct> products) => _products.AddRange(products);
 }

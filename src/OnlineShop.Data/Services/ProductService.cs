@@ -1,5 +1,4 @@
 using Dapper;
-using Microsoft.AspNetCore.Http.Features;
 using OnlineShop.Data.Common;
 using OnlineShop.Data.Interfaces;
 using OnlineShop.Data.Models;
@@ -82,7 +81,63 @@ internal class ProductService : IProductService
         """, new { ProductId = productId, UserId = userId });
     }
 
-    public async Task<bool> OrderProducts(string userId)
+    public async Task<Page<Order>> GetOrdersAsync(string userId)
+    {
+        var db = _connection.Connection;
+
+        var items = await db.QueryAsync<Order>("""
+            SELECT *
+            FROM [Orders]
+            WHERE [UserId] = @UserId;
+        """, new { UserId = userId });
+
+        var total = await db.QueryFirstAsync<int>("""
+            SELECT COUNT(*)
+            FROM [Orders]
+            WHERE [UserId] = @UserId;
+        """, new { UserId = userId });
+
+        return new Page<Order>(total, items);
+    }
+
+    public async Task<Order?> GetOrderByIdAsync(string orderId, string userId)
+    {
+        var db = _connection.Connection;
+
+        var order = await db.QueryFirstOrDefaultAsync<Order>("""
+            SELECT *
+            FROM [Orders] o
+            WHERE o.[Id] = @OrderId AND o.[UserId] = @UserId;
+        """, new {
+                OrderId = orderId,
+                UserId = userId,
+                Offset = 0,
+                Size = 10
+            });
+
+        if (order is not null)
+        {
+            var products = await db.QueryAsync<OrderProduct, Product, OrderProduct>("""
+                SELECT *
+                FROM [OrdersProducts] op
+                LEFT JOIN [Products] p
+                    ON op.[ProductId] = p.[Id]
+                WHERE [OrderId] = @OrderId;
+            """,
+                (op, p) =>
+                {
+                    op.SetProduct(p);
+                    return op;
+                },
+                new { OrderId = orderId });
+
+            order.AddProducts(products);
+        }
+
+        return order;
+    }
+
+    public async Task<bool> OrderProductsAsync(string userId)
     {
         var db = _connection.Connection;
 
@@ -113,7 +168,9 @@ internal class ProductService : IProductService
             await db.QueryAsync("""
                 DELETE FROM [UsersProducts]
                 WHERE [UserId] = @UserId;
-            """, new { UserId = userId }, tranaction);
+            """,
+                new { UserId = userId },
+                tranaction);
 
             await db.QueryAsync("""
                 INSERT INTO [Orders] ([Id], [UserId])
@@ -127,6 +184,14 @@ internal class ProductService : IProductService
                     await tranaction.RollbackAsync();
                     return false;
                 }
+
+                await db.QueryAsync("""
+                    UPDATE [Products]
+                    SET [Quantity] = @Quantity
+                    WHERE [Id] = @Id;
+                """,
+                    new { Id = item.ProductId, Quantity = item.Product.Quantity - item.Quantity },
+                    tranaction);
 
                 await db.QueryAsync("""
                     INSERT INTO [OrdersProducts] ([OrderId], [ProductId], [Quantity])

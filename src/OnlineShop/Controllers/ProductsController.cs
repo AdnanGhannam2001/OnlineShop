@@ -49,9 +49,30 @@ public class ProductsController : Controller
                 new { message = "Product was not found" });
     }
 
-    public async Task<IActionResult> Order()
+    public async Task<IActionResult> Orders([FromQuery] int pageNumber = 0)
     {
-        await _productService.OrderProducts(this.GetUserId());
-        return Ok(); // TODO
+        var page = await _productService.GetOrdersAsync(this.GetUserId());
+        var model = new OrdersModel(pageNumber, page);
+        return View(model);
+    }
+
+    [HttpGet("[action]/{id}")]
+    public async Task<IActionResult> Order([FromRoute] string id)
+    {
+        var model = await _productService.GetOrderByIdAsync(id, this.GetUserId());
+        if (model is null)
+        {
+            return RedirectToAction(nameof(ErrorsController.NotFound),
+                ErrorsController.Name,
+                new { message = "Product was not found" });
+        }
+        
+        return View(model);
+    }
+
+    public async Task<IActionResult> SubmitOrder()
+    {
+        await _productService.OrderProductsAsync(this.GetUserId()); // TODO Handle false
+        return RedirectToAction(nameof(Orders));
     }
 }

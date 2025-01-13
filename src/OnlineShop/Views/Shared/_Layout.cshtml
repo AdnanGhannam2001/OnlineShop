@@ -34,6 +34,10 @@
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                         <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="@ProductsController.Name"
+                                    asp-action="@nameof(ProductsController.Orders)">Orders</a>
+                        </li>
+                        <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="@UsersController.Name"
                                     asp-action="@nameof(UsersController.Cart)">Cart</a>
                         </li>

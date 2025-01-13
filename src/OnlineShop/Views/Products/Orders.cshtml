@@ -1,0 +1,48 @@
+@using OnlineShop.Controllers
+@using OnlineShop.Data.Common
+@using OnlineShop.Data.Models
+@using OnlineShop.Models.Components
+@using OnlineShop.Models.Product
+@using OnlineShop.ViewComponents
+@model OrdersModel
+
+@if(Model.Page.Total == 0)
+{
+  <div class="text-center">
+    <h3>You don't have any orders</h3>
+    <a asp-controller="@ProductsController.Name"
+      asp-action="@nameof(ProductsController.Index)"
+    >Browse products</a>
+  </div>
+}
+else
+{
+<div class="mb-3">
+  <h2>Orders</h2>
+</div>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Order ID</th>
+      <th scope="col">Ordered At</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (var item in Model.Page.Items)
+    {
+    <tr>
+      <td>
+        <a asp-controller="@ProductsController.Name"
+          asp-action="@nameof(ProductsController.Order)"
+          asp-route-id="@item.Id"
+        >@item.Id</a>
+      </td>
+      <td>@item.OrderedAt</td>
+    </tr>
+    }
+  </tbody>
+</table>
+
+@await Component.InvokeAsync(PaginationViewComponent.Name,
+  new PaginationModel(Model.Page.Items.Count(), Model.PageNumber, Model.Page.Total))
+}

@@ -25,4 +25,6 @@ public class OrderProduct
 
     public int Quantity { get; private set; }
     public DateTime AddedAt { get; init; }
+
+    public void SetProduct(Product product) => Product = product;
 }

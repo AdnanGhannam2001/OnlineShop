@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using OnlineShop.Data.Interfaces;
+using OnlineShop.Data.Repositories;
 using OnlineShop.Data.Services;
 
 namespace OnlineShop.Data.Extensions;
@@ -12,6 +13,7 @@ public static class IServiceCollectionExtensions
             .AddScoped<IDatabaseConnection, DapperDatabaseConnection>(
                 _ => new DapperDatabaseConnection(connectionString))
             .AddScoped<IAppUserService, AppUserService>()
+            .AddScoped<IProductRepository, ProductRepository>()
             .AddScoped<IProductService, ProductService>();
     }
 }

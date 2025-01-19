@@ -25,18 +25,7 @@ public class ProductsController : Controller
         var productsResult = await _productService.GetProductsAsync(new PageRequest(10, pageNumber),
             new Range(min, max),
             categoryLabel);
-
-        if (!productsResult.IsSuccess)
-        {
-
-        }
-
         var categoriesResult = await _productService.GetCategoriesAsync();
-
-        if (!categoriesResult.IsSuccess)
-        {
-
-        }
 
         var model = new IndexModel(pageNumber,
             productsResult.Value,

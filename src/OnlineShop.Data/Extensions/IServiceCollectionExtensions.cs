@@ -12,6 +12,7 @@ public static class IServiceCollectionExtensions
         return services
             .AddScoped<IDatabaseConnection, DapperDatabaseConnection>(
                 _ => new DapperDatabaseConnection(connectionString))
+            .AddScoped<IAppUserRepository, AppUserRepository>()
             .AddScoped<IAppUserService, AppUserService>()
             .AddScoped<IProductRepository, ProductRepository>()
             .AddScoped<IProductService, ProductService>();

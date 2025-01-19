@@ -3,13 +3,13 @@ using OnlineShop.Data.Models;
 using OnlineShop.Data.Interfaces;
 using OnlineShop.Data.Common;
 
-namespace OnlineShop.Data.Services;
+namespace OnlineShop.Data.Repositories;
 
-internal class AppUserService : IAppUserService
+internal class AppUserRepository : IAppUserRepository
 {
     private readonly IDatabaseConnection _connection;
 
-    public AppUserService(IDatabaseConnection connection)
+    public AppUserRepository(IDatabaseConnection connection)
     {
         _connection = connection;
     }

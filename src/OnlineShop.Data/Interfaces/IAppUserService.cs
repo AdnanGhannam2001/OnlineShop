@@ -5,11 +5,11 @@ namespace OnlineShop.Data.Interfaces;
 
 public interface IAppUserService
 {
-    Task<AppUser?> GetUserByIdAsync(string id);
-    Task<AppUser?> GetUserByNameAsync(string username);
-    Task<bool> CreateUserAsync(AppUser user);
+    Task<Result<AppUser>> GetUserByIdAsync(string id);
+    Task<Result<AppUser>> GetUserByNameAsync(string username);
+    Task<Result<bool>> CreateUserAsync(AppUser user);
 
-    Task<Page<UserProduct>> GetUsersProductsAsync(string userId, PageRequest pageRequest);
+    Task<Result<Page<UserProduct>>> GetUsersProductsAsync(string userId, PageRequest pageRequest);
     Task AddToCartAsync(UserProduct item);
     Task RemoveFromCartAsync(string productId, string userId);
 }

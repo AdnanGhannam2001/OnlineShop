@@ -19,10 +19,10 @@ internal class ProductService : IProductService
     public async Task<Result<IEnumerable<Category>>> GetCategoriesAsync()
     {
         var cached = await _cache.GetOrCreateAsync("Categories",
-            async entiry =>
+            async entry =>
             {
-                entiry.SlidingExpiration = TimeSpan.FromMinutes(10);
-                entiry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15);
+                entry.SlidingExpiration = TimeSpan.FromMinutes(10);
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15);
                 return await _repo.GetCategoriesAsync();
             });
 
@@ -33,10 +33,10 @@ internal class ProductService : IProductService
     {
         var cached = await _cache.GetOrCreateAsync(
             $"Products-{pageRequest.Number}-{pageRequest.Size}-{priceRange.Start}-{priceRange.End}-{categoryLabel}",
-            async entiry =>
+            async entry =>
             {
-                entiry.SlidingExpiration = TimeSpan.FromSeconds(100);
-                entiry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(2);
+                entry.SlidingExpiration = TimeSpan.FromSeconds(100);
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(2);
                 return await _repo.GetProductsAsync(pageRequest, priceRange, categoryLabel);
             });
 
@@ -45,11 +45,11 @@ internal class ProductService : IProductService
 
     public async Task<Result<Product>> GetProductByIdAsync(string id)
     {
-        var cached = await _cache.GetOrCreateAsync("Product",
-            async entiry =>
+        var cached = await _cache.GetOrCreateAsync($"Product-{id}",
+            async entry =>
             {
-                entiry.SlidingExpiration = TimeSpan.FromMinutes(10);
-                entiry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15);
+                entry.SlidingExpiration = TimeSpan.FromMinutes(10);
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15);
                 return await _repo.GetProductByIdAsync(id);
             });
 
@@ -73,11 +73,11 @@ internal class ProductService : IProductService
 
     public async Task<Result<Order>> GetOrderByIdAsync(string orderId, string userId)
     {
-        var cached = await _cache.GetOrCreateAsync("Order",
-            async entiry =>
+        var cached = await _cache.GetOrCreateAsync($"Order-{orderId}",
+            async entry =>
             {
-                entiry.SlidingExpiration = TimeSpan.FromMinutes(10);
-                entiry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15);
+                entry.SlidingExpiration = TimeSpan.FromMinutes(10);
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15);
                 return await _repo.GetOrderByIdAsync(orderId, userId);
             });
 

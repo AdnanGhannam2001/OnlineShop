@@ -52,7 +52,8 @@ public sealed class UsersController : Controller
         }
 
         var user = new AppUser(model.Username, AppUserRole.NormalUser, model.Password);
-        if (!await _service.CreateUserAsync(user))
+        var createResult = await _service.CreateUserAsync(user);
+        if (!createResult.Value)
         {
             ModelState.AddModelError(nameof(model.Username), "Username already exists");
             return View(model);
@@ -82,20 +83,20 @@ public sealed class UsersController : Controller
             return View(model);
         }
 
-        var user = await _service.GetUserByNameAsync(model.Username);
-        if (user is null)
+        var userResult = await _service.GetUserByNameAsync(model.Username);
+        if (userResult.IsSuccess)
         {
-            ModelState.AddModelError(nameof(model.Username), $"User '{model.Username}' is not found");
+            ModelState.AddModelError(nameof(model.Username), userResult.Exceptions.First().Message);
             return View(model);
         }
 
-        if (!user.PasswordIsCorrect(model.Password))
+        if (!userResult.Value.PasswordIsCorrect(model.Password))
         {
             ModelState.AddModelError(nameof(model.Password), "Password is wrong");
             return View(model);
         }
 
-        await SignInAsync(user.Id, user.Username, model.Keep);
+        await SignInAsync(userResult.Value.Id, userResult.Value.Username, model.Keep);
         return RedirectToAction(nameof(ProductsController.Index), ProductsController.Name);
     }
 
@@ -109,8 +110,8 @@ public sealed class UsersController : Controller
     [Authorize]
     public async Task<IActionResult> Cart([FromQuery] int pageNumber = 0)
     {
-        var page = await _service.GetUsersProductsAsync(this.GetUserId(), new PageRequest(10, pageNumber));
-        var model = new CartModel(pageNumber, page);
+        var pageResult = await _service.GetUsersProductsAsync(this.GetUserId(), new PageRequest(10, pageNumber));
+        var model = new CartModel(pageNumber, pageResult.Value);
         return View(model);
     }
 

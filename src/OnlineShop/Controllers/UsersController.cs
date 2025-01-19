@@ -120,9 +120,9 @@ public sealed class UsersController : Controller
     {
         var item = new UserProduct(this.GetUserId(), id, quantity);
 
-        var product = await _productService.GetProductByIdAsync(id);
+        var productResult = await _productService.GetProductByIdAsync(id);
 
-        if (product is null || quantity < 0 || product.Quantity < quantity)
+        if (!productResult.IsSuccess || quantity < 0 || productResult.Value.Quantity < quantity)
         {
             return RedirectToAction(nameof(ErrorsController.Invalid), ErrorsController.Name, new { message = "Invalid Input" });
         }

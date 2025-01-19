@@ -22,9 +22,25 @@ public class ProductsController : Controller
         [FromQuery] int min = 0,
         [FromQuery] int max = 10000)
     {
+        var productsResult = await _productService.GetProductsAsync(new PageRequest(10, pageNumber),
+            new Range(min, max),
+            categoryLabel);
+
+        if (!productsResult.IsSuccess)
+        {
+
+        }
+
+        var categoriesResult = await _productService.GetCategoriesAsync();
+
+        if (!categoriesResult.IsSuccess)
+        {
+
+        }
+
         var model = new IndexModel(pageNumber,
-            await _productService.GetProductsAsync(new PageRequest(10, pageNumber), new Range(min, max), categoryLabel),
-            await _productService.GetCategoriesAsync(),
+            productsResult.Value,
+            categoriesResult.Value,
             categoryLabel,
             new Range(min, max));
         
@@ -34,25 +50,25 @@ public class ProductsController : Controller
     [HttpGet("{id}")]
     public async Task<IActionResult> Product([FromRoute] string id)
     {
-        var product = await _productService.GetProductByIdAsync(id);
+        var productResult = await _productService.GetProductByIdAsync(id);
         bool? inCart = null;
 
         if (User.Identity?.IsAuthenticated == true)
         {
-            inCart = await _productService.ProductInCartAsync(id, this.GetUserId());
+            inCart = (await _productService.ProductInCartAsync(id, this.GetUserId())).Value;
         }
 
-        return product is not null
-            ? View(new ProductModel(product, inCart))
+        return productResult.IsSuccess
+            ? View(new ProductModel(productResult.Value, inCart))
             : RedirectToAction(nameof(ErrorsController.NotFound),
                 ErrorsController.Name,
-                new { message = "Product was not found" });
+                new { message = productResult.Exceptions.First().Message });
     }
 
     public async Task<IActionResult> Orders([FromQuery] int pageNumber = 0)
     {
-        var page = await _productService.GetOrdersAsync(this.GetUserId());
-        var model = new OrdersModel(pageNumber, page);
+        var pageResult = await _productService.GetOrdersAsync(this.GetUserId());
+        var model = new OrdersModel(pageNumber, pageResult.Value);
         return View(model);
     }
 
